@@ -5,8 +5,7 @@ public class FishController : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float swimSpeed = 3f;
-    [SerializeField] private Vector2 swimBoundsMin = new Vector2(-8f, -4f);
-    [SerializeField] private Vector2 swimBoundsMax = new Vector2(8f, 4f);
+    [SerializeField] private float facingOffset = 0f;
 
     [Header("Growth")]
     [SerializeField] private float startScale = 0.5f;
@@ -21,6 +20,11 @@ public class FishController : MonoBehaviour
     [SerializeField] private string javelinTag = "Javelin";
     [SerializeField] private string foodTag = "Food";
 
+    [Header("Water")]
+    [SerializeField] private float waterSurfaceY = 2f;
+    [SerializeField] private float airGravityScale = 1f;
+    [SerializeField] private float airTurnSpeed = 180f;
+
     public static event System.Action OnFishermanEaten;
     public static event System.Action OnFishKilled;
 
@@ -28,6 +32,12 @@ public class FishController : MonoBehaviour
     private float currentScale;
     private int hitsTaken = 0;
     private bool isDead = false;
+    private Rigidbody2D rb;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
 
     private void Start()
     {
@@ -41,34 +51,46 @@ public class FishController : MonoBehaviour
         moveInput = value.Get<Vector2>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        if (isDead) return;
+        if (isDead)
+        {
+            rb.gravityScale = 0f;
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
 
-        float currentSpeed = Mathf.Max(swimSpeed - (currentScale * speedLossPerScale), 0.5f);
+        bool isUnderwater = rb.position.y <= waterSurfaceY;
 
-        Vector2 nextPos = (Vector2)transform.position + moveInput.normalized * currentSpeed * Time.deltaTime;
-        nextPos.x = Mathf.Clamp(nextPos.x, swimBoundsMin.x, swimBoundsMax.x);
-        nextPos.y = Mathf.Clamp(nextPos.y, swimBoundsMin.y, swimBoundsMax.y);
-        transform.position = nextPos;
+        if (!isUnderwater)
+        {
+            rb.gravityScale = airGravityScale;
+            FaceAirVelocity();
+            return;
+        }
+
+        rb.gravityScale = 0f;
+
+        float currentSpeed = Mathf.Max(swimSpeed - currentScale * speedLossPerScale, 0.5f);
+
+        Vector2 movement = Vector2.ClampMagnitude(moveInput, 1f);
+        rb.linearVelocity = movement * currentSpeed;
 
         FaceMoveDirection();
     }
 
     private void FaceMoveDirection()
     {
-        if (Mathf.Abs(moveInput.x) < 0.01f) return;
-        Vector3 scale = transform.localScale;
-        scale.x = Mathf.Abs(scale.x) * Mathf.Sign(moveInput.x);
-        transform.localScale = scale;
+        if (moveInput.sqrMagnitude < 0.01f) return;
+        float angle = Mathf.Atan2(moveInput.y, moveInput.x) * Mathf.Rad2Deg;
+        rb.SetRotation(angle + facingOffset);
     }
 
     private void Grow()
     {
         currentScale = Mathf.Min(currentScale + growthPerFood, maxScale);
 
-        float signX = Mathf.Sign(transform.localScale.x == 0 ? 1 : transform.localScale.x);
-        transform.localScale = new Vector3(signX * currentScale, currentScale, currentScale);
+        transform.localScale = Vector3.one * currentScale;
 
         if (currentScale >= scaleThresholdToEatFisherman)
         {
@@ -122,5 +144,17 @@ public class FishController : MonoBehaviour
         OnFishKilled?.Invoke();
         Debug.Log("Fish killed by javelin. Fisherman player wins.");
         Destroy(gameObject);
+    }
+
+    private void FaceAirVelocity()
+    {
+        Vector2 velocity = rb.linearVelocity;
+
+        if (velocity.sqrMagnitude < 0.01f) return;
+
+        float targetAngle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg + facingOffset;
+        float nextAngle = Mathf.MoveTowardsAngle(rb.rotation, targetAngle, airTurnSpeed * Time.fixedDeltaTime);
+
+        rb.SetRotation(nextAngle);
     }
 }
