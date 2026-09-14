@@ -11,6 +11,9 @@ public class FishermanController : MonoBehaviour
     [SerializeField] private Rigidbody2D bulletPrefab;
     [SerializeField] private float bulletSpeed = 10f;
     [SerializeField] private float fireCooldown = 0.4f;
+    [Header("SFX")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip fireSfx;
     private float nextFireTime = 0f;
     private Vector2 aimInput;
 
@@ -38,6 +41,16 @@ public class FishermanController : MonoBehaviour
         bullet.linearVelocity = (Vector2)gun.right * bulletSpeed;
 
         Destroy(bullet.gameObject, 3f);
+
+        PlayFireSfx();
+    }
+
+    private void PlayFireSfx()
+    {
+        if (audioSource != null && fireSfx != null)
+        {
+            audioSource.PlayOneShot(fireSfx);
+        }
     }
 
     private void Update()

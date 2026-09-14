@@ -25,6 +25,10 @@ public class FishController : MonoBehaviour
     [SerializeField] private float airGravityScale = 1f;
     [SerializeField] private float airTurnSpeed = 180f;
 
+    [Header("SFX")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip eatSfx;
+
     public static event System.Action OnFishermanEaten;
     public static event System.Action OnFishKilled;
 
@@ -114,6 +118,7 @@ public class FishController : MonoBehaviour
         {
             Destroy(other.gameObject);
             Grow();
+            PlayEatSfx();
         }
     }
 
@@ -156,5 +161,13 @@ public class FishController : MonoBehaviour
         float nextAngle = Mathf.MoveTowardsAngle(rb.rotation, targetAngle, airTurnSpeed * Time.fixedDeltaTime);
 
         rb.SetRotation(nextAngle);
+    }
+
+    private void PlayEatSfx()
+    {
+        if (audioSource != null && eatSfx != null)
+        {
+            audioSource.PlayOneShot(eatSfx);
+        }
     }
 }
