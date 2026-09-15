@@ -1,11 +1,20 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class FishController : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float swimSpeed = 3f;
     [SerializeField] private float facingOffset = 0f;
+
+    [Header("Dash")]
+    [SerializeField] private float dashSpeed = 9f;
+    [SerializeField] private float dashDuration = 0.2f;
+    [SerializeField] private float dashCooldown = 1f;
+    private Vector2 dashDirection;
+    private float dashEndTime;
+    private float nextDashTime;
 
     [Header("Growth")]
     [SerializeField] private float startScale = 0.5f;
@@ -28,6 +37,8 @@ public class FishController : MonoBehaviour
     [Header("SFX")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip eatSfx;
+    [Header("UI")]
+    [SerializeField] private Slider fullnessBar;
 
     public static event System.Action OnFishermanEaten;
     public static event System.Action OnFishKilled;
@@ -47,6 +58,7 @@ public class FishController : MonoBehaviour
     {
         currentScale = startScale;
         transform.localScale = Vector3.one * currentScale;
+        UpdateFullnessBar();
     }
 
     // Bind this to a "Move" action (Vector2, WASD composite) on the fish's PlayerInput
@@ -75,6 +87,14 @@ public class FishController : MonoBehaviour
 
         rb.gravityScale = 0f;
 
+        if (Time.time < dashEndTime)
+        {
+            rb.linearVelocity = dashDirection * dashSpeed;
+            float angle = Mathf.Atan2(dashDirection.y, dashDirection.x) * Mathf.Rad2Deg;
+            rb.SetRotation(angle + facingOffset);
+            return;
+        }
+
         float currentSpeed = Mathf.Max(swimSpeed - currentScale * speedLossPerScale, 0.5f);
 
         Vector2 movement = Vector2.ClampMagnitude(moveInput, 1f);
@@ -95,6 +115,8 @@ public class FishController : MonoBehaviour
         currentScale = Mathf.Min(currentScale + growthPerFood, maxScale);
 
         transform.localScale = Vector3.one * currentScale;
+
+        UpdateFullnessBar();
 
         if (currentScale >= scaleThresholdToEatFisherman)
         {
@@ -169,5 +191,33 @@ public class FishController : MonoBehaviour
         {
             audioSource.PlayOneShot(eatSfx);
         }
+    }
+
+    private void UpdateFullnessBar()
+    {
+        if (fullnessBar == null) return;
+
+        fullnessBar.value = Mathf.InverseLerp(startScale, scaleThresholdToEatFisherman, currentScale);
+    }
+
+    private void OnDash(InputValue value)
+    {
+        if (!value.isPressed || isDead) return;
+
+        if (rb.position.y > waterSurfaceY) return;
+        if (Time.time < dashEndTime || Time.time < nextDashTime) return;
+
+        if (moveInput.sqrMagnitude >= 0.01f)
+        {
+            dashDirection = moveInput.normalized;
+        }
+        else
+        {
+            float angle = (rb.rotation - facingOffset) * Mathf.Deg2Rad;
+            dashDirection = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+        }
+
+        dashEndTime = Time.time + dashDuration;
+        nextDashTime = dashEndTime + dashCooldown;
     }
 }
