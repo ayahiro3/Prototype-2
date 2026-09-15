@@ -10,6 +10,11 @@ public class GameOverManager : MonoBehaviour
     [SerializeField] private TMP_Text resultText; // swap to Text if not using TextMeshPro
     [SerializeField] private Button restartButton;
 
+    [Header("Result Sprites")]
+    [SerializeField] private Image resultImage;       // single Image that swaps sprite
+    [SerializeField] private Sprite fishWonSprite;     // shown when fisherman is eaten
+    [SerializeField] private Sprite fishermanWonSprite; // dead fish sprite
+
     private void Awake()
     {
         if (gameOverPanel != null)
@@ -37,19 +42,25 @@ public class GameOverManager : MonoBehaviour
 
     private void HandleFishWon()
     {
-        ShowGameOver("Fish Won!");
+        ShowGameOver("Fish Won!", fishWonSprite);
     }
 
     private void HandleFishermanWon()
     {
-        ShowGameOver("Fisherman Won!");
+        ShowGameOver("Fisherman Won!", fishermanWonSprite);
     }
 
-    private void ShowGameOver(string message)
+    private void ShowGameOver(string message, Sprite sprite)
     {
         if (resultText != null)
         {
             resultText.text = message;
+        }
+
+        if (resultImage != null && sprite != null)
+        {
+            resultImage.sprite = sprite;
+            resultImage.enabled = true;
         }
 
         if (gameOverPanel != null)
