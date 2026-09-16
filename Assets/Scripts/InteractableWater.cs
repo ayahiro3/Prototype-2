@@ -1,9 +1,12 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
+#endif
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(EdgeCollider2D))]
 [RequireComponent(typeof(WaterTriggerHandler))]
@@ -208,7 +211,7 @@ public class InteractableWater : MonoBehaviour
     }
 }
 
-
+#if UNITY_EDITOR
 [CustomEditor(typeof(InteractableWater))]
 public class InteractableWaterEditor : Editor
 {
@@ -301,3 +304,4 @@ public class InteractableWaterEditor : Editor
 
     }
 }
+#endif

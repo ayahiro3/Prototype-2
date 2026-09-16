@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections;
 using TMPro;
 
 public class GameOverManager : MonoBehaviour
@@ -14,9 +15,21 @@ public class GameOverManager : MonoBehaviour
     [SerializeField] private Image resultImage;       // single Image that swaps sprite
     [SerializeField] private Sprite fishWonSprite;     // shown when fisherman is eaten
     [SerializeField] private Sprite fishermanWonSprite; // dead fish sprite
+    [SerializeField, Min(0.1f)] private float fishWonImageScale = 2f;
+
+    private Vector3 originalImageScale;
+    [Header("Hit Feedback")]
+    [SerializeField] private HitStop hitStop;
+
+    private bool gameOverPending;
 
     private void Awake()
     {
+        if (resultImage != null)
+        {
+            originalImageScale = resultImage.transform.localScale;
+        }
+
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(false);
@@ -42,12 +55,25 @@ public class GameOverManager : MonoBehaviour
 
     private void HandleFishWon()
     {
-        ShowGameOver("Fish Won!", fishWonSprite);
+        StartCoroutine(ShowGameOverAfterHitStop("Fish Won!", fishWonSprite));
     }
 
     private void HandleFishermanWon()
     {
-        ShowGameOver("Fisherman Won!", fishermanWonSprite);
+        StartCoroutine(ShowGameOverAfterHitStop("Fisherman Won!", fishermanWonSprite));
+    }
+
+    private IEnumerator ShowGameOverAfterHitStop(string message, Sprite sprite)
+    {
+        if (gameOverPending) yield break;
+        gameOverPending = true;
+
+        while (hitStop != null && hitStop.IsPlaying)
+        {
+            yield return null;
+        }
+
+        ShowGameOver(message, sprite);
     }
 
     private void ShowGameOver(string message, Sprite sprite)
@@ -60,6 +86,15 @@ public class GameOverManager : MonoBehaviour
         if (resultImage != null && sprite != null)
         {
             resultImage.sprite = sprite;
+            resultImage.type = Image.Type.Simple;
+            resultImage.preserveAspect = true;
+
+            float scaleMultiplier = sprite == fishWonSprite
+                ? fishWonImageScale
+                : 1f;
+
+            resultImage.transform.localScale = originalImageScale * scaleMultiplier;
+
             resultImage.enabled = true;
         }
 

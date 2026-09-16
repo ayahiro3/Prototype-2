@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+
 
 public class FishermanController : MonoBehaviour
 {
@@ -66,6 +68,7 @@ public class FishermanController : MonoBehaviour
 
     private void OnFire(InputValue value)
     {
+        Debug.Log($"Hunter Fire | Value: {value.Get<float>():F3} | Pressed: {value.isPressed}");
         if (!isActiveAndEnabled) return;
 
         if (value.isPressed)
@@ -226,5 +229,16 @@ public class FishermanController : MonoBehaviour
     {
         isHolding = false;
         HideAimLines();
+    }
+
+    private void OnRestart()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void OnQuit() 
+    {
+        Application.Quit();
     }
 }

@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 public class FishController : MonoBehaviour
 {
@@ -39,6 +41,8 @@ public class FishController : MonoBehaviour
     [SerializeField] private AudioClip eatSfx;
     [Header("UI")]
     [SerializeField] private Slider fullnessBar;
+    [Header("Hit Feedback")]
+    [SerializeField] private HitStop hitStop;
 
     public static event System.Action OnFishermanEaten;
     public static event System.Action OnFishKilled;
@@ -152,12 +156,17 @@ public class FishController : MonoBehaviour
 
         if (collision.gameObject.CompareTag(javelinTag))
         {
-            TakeHit();
+            TakeHit(collision.GetContact(0).point);
         }
     }
 
-    private void TakeHit()
+    private void TakeHit(Vector3 hitPosition)
     {
+        if (hitStop != null)
+        {
+            hitStop.Play(hitPosition);
+        }
+
         hitsTaken++;
         if (hitsTaken >= hitsToKill)
         {
@@ -219,5 +228,11 @@ public class FishController : MonoBehaviour
 
         dashEndTime = Time.time + dashDuration;
         nextDashTime = dashEndTime + dashCooldown;
+    }
+
+    private void OnRestart()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

@@ -840,15 +840,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a4c8728fc70d4ebda57f6f23fe789a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FishController
-  swimSpeed: 8
+  swimSpeed: 11
   facingOffset: 180
   dashSpeed: 12
   dashDuration: 0.2
   dashCooldown: 1
   startScale: 0.08
-  maxScale: 0.14
+  maxScale: 0.12
   growthPerFood: 0.005
-  scaleThresholdToEatFisherman: 0.14
+  scaleThresholdToEatFisherman: 0.12
   speedLossPerScale: 0
   hitsToKill: 1
   javelinTag: Javelin
@@ -859,6 +859,7 @@ MonoBehaviour:
   audioSource: {fileID: 465248535}
   eatSfx: {fileID: 8300000, guid: 22f41c3e04abc400fbd5fcdf72d0861e, type: 3}
   fullnessBar: {fileID: 1518320896}
+  hitStop: {fileID: 1862326600}
 --- !u!70 &465248533
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1136,7 +1137,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 5.67
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1651,8 +1652,8 @@ Transform:
   m_GameObject: {fileID: 944266837}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.9, y: 3.82, z: 0}
-  m_LocalScale: {x: 0.3, y: 7.748125, z: 1}
+  m_LocalPosition: {x: 8.9, y: 5.53, z: 0}
+  m_LocalScale: {x: 0.3, y: 18.69235, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 142135871}
@@ -1913,7 +1914,7 @@ Transform:
   m_GameObject: {fileID: 1051641742}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.657, y: -0.01, z: 0}
+  m_LocalPosition: {x: 0.597, y: -0.055, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1946,8 +1947,8 @@ Transform:
   m_GameObject: {fileID: 1286857545}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.9, y: 3.87, z: 0}
-  m_LocalScale: {x: 0.3, y: 7.748125, z: 1}
+  m_LocalPosition: {x: -8.9, y: 5.95, z: 0}
+  m_LocalScale: {x: 0.3, y: 16.75532, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 142135871}
@@ -2270,7 +2271,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 21, y: -191}
-  m_SizeDelta: {x: 267.3864, y: 236.0015}
+  m_SizeDelta: {x: 400, y: 236.0015}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1423175718
 GameObject:
@@ -2763,8 +2764,10 @@ MonoBehaviour:
   resultText: {fileID: 2053296869}
   restartButton: {fileID: 102189894}
   resultImage: {fileID: 1410850089}
-  fishWonSprite: {fileID: 1406491151185602923, guid: 9e3bef9aa5a4a493b90e813f24897772, type: 3}
+  fishWonSprite: {fileID: 21300000, guid: 9e3bef9aa5a4a493b90e813f24897772, type: 3}
   fishermanWonSprite: {fileID: 47480688892538606, guid: edb149c5921da492c99baefa5ab36d24, type: 3}
+  fishWonImageScale: 2
+  hitStop: {fileID: 1862326600}
 --- !u!1 &1597561586
 GameObject:
   m_ObjectHideFlags: 0
@@ -2846,13 +2849,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FishermanController
   aimPivot: {fileID: 1048136612}
-  aimHalfArc: 80
+  aimHalfArc: 90
   gun: {fileID: 1051641743}
   bulletPrefab: {fileID: 3283053379966967320, guid: cbad8cf3368d64cc98f81fe0b6ce69ff, type: 3}
   bulletSpeed: 15
-  chargedBulletSpeed: 30
+  chargedBulletSpeed: 40
   fireCooldown: 0.2
-  steadyTime: 0.6
+  steadyTime: 0.4
   chargeTime: 1.2
   startingSpread: 30
   aimLineLeft: {fileID: 1499668109}
@@ -3044,6 +3047,154 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1653008569}
   m_CullTransparentMesh: 1
+--- !u!1 &1862326599
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1862326601}
+  - component: {fileID: 1862326600}
+  - component: {fileID: 1862326602}
+  m_Layer: 0
+  m_Name: HitStop
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1862326600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1862326599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a9e88c29ed5a430f898c33ed7338b35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitStop
+  duration: 0.4
+  hitParticles: {fileID: 6063054824565379173, guid: a767be6428f9d4db584bb42fa50536ff, type: 3}
+  hitAudio: {fileID: 1862326602}
+  hitSound: {fileID: 8300000, guid: 013ccb1ebffa14c1093cd02dca86224c, type: 3}
+  cameraTransform: {fileID: 519420032}
+  shakeStrength: 0.5
+--- !u!4 &1862326601
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1862326599}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1423.7404, y: 730.9, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1862326602
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1862326599}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1872346206
 GameObject:
   m_ObjectHideFlags: 0
@@ -3560,10 +3711,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FoodSpawner
   foodPrefab: {fileID: 8475481402923871810, guid: 4265f5cea8b9043318b21fb4bcc447ed, type: 3}
-  spawnInterval: 1.5
+  spawnInterval: 1
   spawnBoundsMin: {x: -8, y: -4}
   spawnBoundsMax: {x: 8, y: 2}
-  maxFoodOnScreen: 10
+  maxFoodOnScreen: 3
   foodTag: Food
 --- !u!4 &2063653583
 Transform:
@@ -3699,3 +3850,4 @@ SceneRoots:
   - {fileID: 1588256043}
   - {fileID: 142592711}
   - {fileID: 1423175720}
+  - {fileID: 1862326601}
